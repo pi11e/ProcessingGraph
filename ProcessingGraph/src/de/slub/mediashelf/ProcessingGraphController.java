@@ -4,6 +4,19 @@ import java.util.ArrayList;
 
 import processing.core.*;
 
+/*
+ * Simple java project setup for the extensible processing graph project
+ * originally created by 
+ * 
+ * Mike "Pomax" Kamermans 2011
+ * http://processingjs.nihongoresources.com/graphs
+ * 
+ * 
+ * This setup created by
+ * Philipp "pi11e" Sonnefeld 2013
+ */
+
+
 @SuppressWarnings("serial")
 public class ProcessingGraphController extends PApplet 
 {

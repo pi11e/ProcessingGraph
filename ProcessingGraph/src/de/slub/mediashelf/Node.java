@@ -90,8 +90,9 @@ public class Node
 		float vl = (float) (PApplet.sqrt(dx*dx+dy*dy) - PApplet.sqrt(r1*r1+r2*r2)*1.5);
 		int[] end = parent.rotateCoordinate(vl, 0, angle);
 		parent.line(x,y,x+end[0],y+end[1]);
-		drawArrowHead(x+end[0], y+end[1], angle);
+		//drawArrowHead(x+end[0], y+end[1], angle);
 	}
+	
 	void drawArrowHead(int ox, int oy, float angle) {
 		int[] rc1 = parent.rotateCoordinate(arrowhead[0], arrowhead[1], angle);
 		int[] rc2 = parent.rotateCoordinate(arrowhead[2], arrowhead[3], angle);

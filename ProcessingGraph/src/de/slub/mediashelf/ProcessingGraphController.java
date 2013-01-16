@@ -4,15 +4,21 @@ import java.util.ArrayList;
 
 import processing.core.*;
 
+
+
+
 @SuppressWarnings("serial")
 public class ProcessingGraphController extends PApplet 
 {
+	int sizeX = 1024;
+	int sizeY = 768;
+	
 	DirectedGraph g = null;
 	int padding=30;
 
 	public void setup()
 	{
-		size(300,300);
+		size(sizeX,sizeY);
 		frameRate(24);
 		noLoop();
 	}
@@ -56,6 +62,7 @@ public class ProcessingGraphController extends PApplet
 		// circular graph
 		else if(key=='c' || key==99) {
 			makeGraph();
+			g.setFlowAlgorithm(new CentralCircleFlowAlgorithm(this));
 			redraw();  }
 		// force-directed graph
 		else if(key=='f' || key==102) {
@@ -67,35 +74,68 @@ public class ProcessingGraphController extends PApplet
 
 	void makeGraph()
 	{
-		// define a graph
 		g = new DirectedGraph(this);
+		
+		// nodes (constructor is parent, label, x, y):
+		Node start = new Node(this, "Start", width/2, height/2);
+		g.addNode(start);
+		
+		String[] firstLevelLabels = new String[]{"Saxonica", "Handschriften", "Musik", "Technikgeschichte", "Extras"};
+		Node[] firstLevelNodes = new Node[firstLevelLabels.length];
+		for(int i = 0; i < firstLevelLabels.length; i++)
+		{
+			Node n = new Node(this, firstLevelLabels[i], width/2, height/2);
+			g.addNode(n);
+			// link all first level nodes to start node
+			g.linkNodes(start, n);
+			firstLevelNodes[i] = n;
+		}
+		
 
-		// define some nodes
-		Node n1 = new Node(this, "1",padding,padding);
-		Node n2 = new Node(this, "2",padding,height-padding);
-		Node n3 = new Node(this, "3",width-padding,height-padding);
-		Node n4 = new Node(this, "4",width-padding,padding);
-		Node n5 = new Node(this, "5",width-3*padding,height-2*padding);
-		Node n6 = new Node(this, "6",width-3*padding,2*padding);
-
-		// add nodes to graph
-		g.addNode(n1);
-		g.addNode(n2);
-		g.addNode(n3);
-		g.addNode(n4);
-		g.addNode(n5);
-		g.addNode(n6);
-
-		// link nodes
-		g.linkNodes(n1,n2);
-		g.linkNodes(n2,n3);
-		g.linkNodes(n3,n4);
-		g.linkNodes(n4,n1);
-		g.linkNodes(n1,n3);
-		g.linkNodes(n2,n4);
-		g.linkNodes(n5,n6);
-		g.linkNodes(n1,n6);
-		g.linkNodes(n2,n5);
+		for(Node firstLevelNode : firstLevelNodes)
+		{
+			// add 10 nodes to each first level node
+			for(int j = 0; j < 10; j++)
+			{
+				Node secondLevelNode = new Node(this, String.valueOf(j), padding, padding);
+				g.addNode(secondLevelNode);
+				g.linkNodes(firstLevelNode, secondLevelNode);
+			}	
+		}
+		
+		
+		
+		
+		// original code:
+//		// define a graph
+//		g = new DirectedGraph(this);
+//
+//		// define some nodes
+//		Node n1 = new Node(this, "1",padding,padding);
+//		Node n2 = new Node(this, "2",padding,height-padding);
+//		Node n3 = new Node(this, "3",width-padding,height-padding);
+//		Node n4 = new Node(this, "4",width-padding,padding);
+//		Node n5 = new Node(this, "5",width-3*padding,height-2*padding);
+//		Node n6 = new Node(this, "6",width-3*padding,2*padding);
+//
+//		// add nodes to graph
+//		g.addNode(n1);
+//		g.addNode(n2);
+//		g.addNode(n3);
+//		g.addNode(n4);
+//		g.addNode(n5);
+//		g.addNode(n6);
+//
+//		// link nodes
+//		g.linkNodes(n1,n2);
+//		g.linkNodes(n2,n3);
+//		g.linkNodes(n3,n4);
+//		g.linkNodes(n4,n1);
+//		g.linkNodes(n1,n3);
+//		g.linkNodes(n2,n4);
+//		g.linkNodes(n5,n6);
+//		g.linkNodes(n1,n6);
+//		g.linkNodes(n2,n5);
 	}
 
 	void makeTree()
@@ -151,7 +191,7 @@ public class ProcessingGraphController extends PApplet
 		double d2 = PI/2.0;
 		double d3 = PI;
 		double d4 = 3.0*PI/2.0;
-		// compute angle basd on dx and dy values
+		// compute angle based on dx and dy values
 		double angle = 0;
 		float adx = abs((float)dx);
 		float ady = abs((float)dy);
